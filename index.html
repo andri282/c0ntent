@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Andri's Content Planner</title>
     <style>
+        /* --- CSS UTAMA (GAK PERLU FILE LUAR) --- */
         :root {
             --primary: #2563eb; 
             --bg: #f3f4f6;
@@ -15,7 +16,6 @@
         }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
         
-        /* HEADER: Balik ke desain lega + Flexbox buat tombol */
         .header { 
             background: var(--primary); 
             color: white; 
@@ -30,7 +30,6 @@
         .header h1 { margin: 0; font-size: 1.5rem; }
         .header p { margin: 5px 0 0; opacity: 0.9; font-size: 0.9rem; }
 
-        /* TOMBOL TAMBAH: Desain rapi */
         .btn-add { 
             background: white; 
             color: var(--primary); 
@@ -44,7 +43,6 @@
         }
         .btn-add:hover { background: #eff6ff; transform: translateY(-1px); }
 
-        /* TABEL: Padding gede lagi biar gak sempit */
         .table-wrap { overflow-x: auto; background: var(--card); border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         table { width: 100%; border-collapse: collapse; min-width: 900px; }
         th { background: #f8fafc; text-align: left; padding: 16px; font-weight: 600; color: #64748b; border-bottom: 2px solid var(--border); font-size: 1rem; }
@@ -52,28 +50,23 @@
         tr:last-child td { border-bottom: none; }
         tr:hover { background-color: #f8fafc; }
 
-        /* BADGES: Gue kasih 'white-space: nowrap' biar gak turun baris kayak di screenshot lo */
         .badge { padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; display: inline-block; white-space: nowrap; }
         
-        /* WARNA KATEGORI */
         .cat-gadget { background: #dbeafe; color: #1e40af; } 
         .cat-vlog { background: #fef9c3; color: #854d0e; } 
         .cat-shorts { background: #fee2e2; color: #991b1b; } 
         .cat-brainstorm { background: #d1fae5; color: #065f46; } 
         .cat-default { background: #f3f4f6; color: #4b5563; } 
 
-        /* PRIORITAS */
         .prio-high { color: #dc2626; font-weight: 700; }
         .prio-medium { color: #d97706; font-weight: 600; }
         .prio-low { color: #16a34a; font-weight: 600; }
 
-        /* LOGIKA HARI & SELESAI */
         .days-ok { color: #4b5563; font-weight: 500; }
         .days-today { color: #ea580c; font-weight: 800; }
         .days-late { color: #dc2626; font-weight: 800; background: #fee2e2; padding: 4px 8px; border-radius: 6px; white-space: nowrap; }
         .days-done { color: var(--success); font-weight: 700; background: #dcfce7; padding: 4px 10px; border-radius: 6px; white-space: nowrap; border: 1px solid #bbf7d0; }
 
-        /* INPUTS */
         select { padding: 8px; border: 1px solid var(--border); border-radius: 6px; background: white; font-size: 0.9rem; cursor: pointer; }
         input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; accent-color: var(--success); }
         
@@ -112,7 +105,7 @@
 
     <script>
         // ==========================================
-        // PASTE URL DEPLOYMENT APPS SCRIPT DI SINI!
+        // PASTE URL APPS SCRIPT DI SINI!
         // ==========================================
         const API_URL = "https://script.google.com/macros/s/AKfycbzUuN3e88CYwvlRYNGLsYsDxFXxFHC0ZyWE4vPenzkn9927tetWD2K1c52XBp0X9FD3zg/exec"; 
 
@@ -124,7 +117,7 @@
                 updateStats(json.data);
             } catch (err) {
                 document.getElementById('task-list').innerHTML = 
-                    `<tr><td colspan="8" style="text-align:center; color:red; padding:20px;">Gagal koneksi. Pastikan URL Script benar.</td></tr>`;
+                    `<tr><td colspan="8" style="text-align:center; color:red; padding:20px;">Gagal koneksi. Cek URL Script.</td></tr>`;
             }
         }
 
@@ -135,39 +128,19 @@
             tasks.forEach(task => {
                 if (!task.no) return; 
 
-                // LOGIKA: Cek apakah status Published atau Done dicentang
                 const isFinished = (task.status === 'Published' || task.done === true);
-
-                // Hitung Tanggal
-                const due = new Date(task.duedate);
-                const today = new Date();
-                due.setHours(0,0,0,0);
-                today.setHours(0,0,0,0);
+                const daysData = calculateDays(task.duedate); // Hitung hari
                 
-                const diffTime = due - today;
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                
-                let daysText = "";
-                let daysClass = "";
+                let daysText = daysData.text;
+                let daysClass = daysData.class;
 
-                // Tampilan jika selesai
+                // Override tampilan jika status sudah selesai
                 if (isFinished) {
                     daysText = "Selesai ✅";
                     daysClass = "days-done";
-                } else {
-                    if (diffDays < 0) {
-                        daysText = `Telat ${Math.abs(diffDays)} hari`;
-                        daysClass = "days-late";
-                    } else if (diffDays === 0) {
-                        daysText = "HARI INI!";
-                        daysClass = "days-today";
-                    } else {
-                        daysText = `${diffDays} hari lagi`;
-                        daysClass = "days-ok";
-                    }
                 }
 
-                // Styling Kategori & Prioritas
+                // Styling Kategori
                 let catClass = 'cat-default';
                 const c = task.category ? task.category.toLowerCase() : "";
                 if(c.includes('gadget')) catClass = 'cat-gadget';
@@ -175,6 +148,7 @@
                 else if(c.includes('short')) catClass = 'cat-shorts';
                 else if(c.includes('brain')) catClass = 'cat-brainstorm';
 
+                // Styling Priority
                 let prioClass = 'prio-low';
                 if(task.priority === 'High') prioClass = 'prio-high';
                 if(task.priority === 'Medium') prioClass = 'prio-medium';
@@ -190,7 +164,7 @@
                     <td><span id="days-${task.no}" class="${daysClass}">${daysText}</span></td>
                     
                     <td>
-                        <select onchange="handleStatusChange(${task.no}, this.value)">
+                        <select onchange="handleStatusChange(${task.no}, this.value, '${task.duedate}')">
                             <option value="Not Started" ${task.status === 'Not Started' ? 'selected' : ''}>Not Started</option>
                             <option value="Research" ${task.status === 'Research' ? 'selected' : ''}>Research</option>
                             <option value="Scripting" ${task.status === 'Scripting' ? 'selected' : ''}>Scripting</option>
@@ -208,29 +182,54 @@
             });
         }
 
-        // LOGIKA BARU: Handle perubahan status
-        function handleStatusChange(id, newStatus) {
-            // 1. Update Status ke Backend
+        // --- LOGIKA UTAMA PERBAIKAN ---
+        function handleStatusChange(id, newStatus, duedate) {
+            // 1. Update Status ke Database
             updateData(id, 'status', newStatus);
 
-            // 2. Jika status berubah jadi 'Published'
+            const checkbox = document.getElementById(`check-${id}`);
+            const daysLabel = document.getElementById(`days-${id}`);
+
             if (newStatus === 'Published') {
-                // FORCE UPDATE TAMPILAN (Biar gak perlu refresh)
-                
-                // A. Centang Checkbox
-                const checkbox = document.getElementById(`check-${id}`);
+                // LOGIKA MAJU (Selesai)
                 if(checkbox) {
                     checkbox.checked = true;
-                    updateData(id, 'done', true); // Kirim sinyal done juga
+                    updateData(id, 'done', true); 
                 }
-
-                // B. Ubah teks Days Left jadi Selesai
-                const daysLabel = document.getElementById(`days-${id}`);
                 if(daysLabel) {
                     daysLabel.innerText = "Selesai ✅";
                     daysLabel.className = "days-done";
                 }
+            } else {
+                // LOGIKA MUNDUR (Revisi/Balik lagi)
+                // 1. Uncheck box jika tadinya tercentang
+                if(checkbox && checkbox.checked) {
+                    checkbox.checked = false;
+                    updateData(id, 'done', false);
+                }
+
+                // 2. Hitung ulang hari (Recalculate)
+                // Kita hitung manual di sini biar gak perlu reload page
+                const daysData = calculateDays(duedate);
+                if(daysLabel) {
+                    daysLabel.innerText = daysData.text;
+                    daysLabel.className = daysData.class;
+                }
             }
+        }
+
+        // Helper: Hitung Hari
+        function calculateDays(dateStr) {
+            const due = new Date(dateStr);
+            const today = new Date();
+            due.setHours(0,0,0,0);
+            today.setHours(0,0,0,0);
+            
+            const diffDays = Math.ceil((due - today) / (1000 * 60 * 60 * 24));
+            
+            if (diffDays < 0) return { text: `Telat ${Math.abs(diffDays)} hari`, class: "days-late" };
+            if (diffDays === 0) return { text: "HARI INI!", class: "days-today" };
+            return { text: `${diffDays} hari lagi`, class: "days-ok" };
         }
 
         function updateData(id, type, value) {
@@ -240,15 +239,13 @@
 
             fetch(url, { method: 'POST' });
             
-            if(type === 'done') {
-                // Update header info sedikit delay biar smooth
-                setTimeout(() => {
-                     const total = document.querySelectorAll('#task-list tr').length;
-                     const done = document.querySelectorAll('input[type="checkbox"]:checked').length;
-                     document.getElementById('progress-info').innerHTML = 
-                        `Progress: <b>${done}</b> selesai dari <b>${total}</b> konten.`;
-                }, 500);
-            }
+            // Update Text Header Info (Simulasi visual)
+            setTimeout(() => {
+                 const total = document.querySelectorAll('#task-list tr').length;
+                 const done = document.querySelectorAll('input[type="checkbox"]:checked').length;
+                 document.getElementById('progress-info').innerHTML = 
+                    `Progress: <b>${done}</b> selesai dari <b>${total}</b> konten.`;
+            }, 500);
         }
 
         function updateStats(tasks) {
