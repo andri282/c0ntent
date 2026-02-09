@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Andri's Content Planner</title>
+    <style>
+        :root {
+            --bg-color: #f4f6f8;
+            --card-bg: #ffffff;
+            --text-main: #333;
+            --primary: #4a90e2; /* Biru kayak header excel lo */
+            --danger: #e74c3c;
+            --success: #2ecc71;
+            --warning: #f1c40f;
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-color); margin: 0; padding: 20px; color: var(--text-main); }
+        
+        /* Header Dashboard */
+        .header { background: var(--primary); color: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .header h1 { margin: 0; font-size: 1.5rem; }
+        .header p { margin: 5px 0 0; opacity: 0.9; }
+
+        /* Table Container - Biar bisa scroll di HP */
+        .table-container { overflow-x: auto; background: var(--card-bg); border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        
+        table { width: 100%; border-collapse: collapse; min-width: 800px; /* Min width biar gak penyet di HP */ }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background-color: #eef2f5; font-weight: 600; color: #555; position: sticky; top: 0; }
+        
+        /* Badges & Styling */
+        .badge { padding: 4px 8px; border-radius: 6px; font-size: 0.85rem; font-weight: 500; display: inline-block; }
+        
+        /* Category Colors */
+        .cat-gadget { background: #dceefb; color: #0052cc; } /* Biru */
+        .cat-vlog { background: #fff7d6; color: #b08800; } /* Kuning/Krem */
+        .cat-shorts { background: #ffebeb; color: #de350b; } /* Merah */
+        .cat-brainstorm { background: #e3fcef; color: #006644; } /* Hijau */
+
+        /* Priority Colors */
+        .prio-high { color: var(--danger); font-weight: bold; }
+        .prio-medium { color: #d69e2e; }
+        .prio-low { color: var(--success); }
+
+        /* Select & Input Styling */
+        select { padding: 5px; border: 1px solid #ddd; border-radius: 4px; background: white; font-size: 0.9rem; }
+        input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; accent-color: var(--success); }
+        
+        /* Days Left Logic */
+        .days-left { font-weight: 500; }
+        .days-late { color: var(--danger); }
+
+        .loading { text-align: center; padding: 20px; color: #888; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Halo Andri 👋</h1>
+        <p id="progress-text">Memuat data konten...</p>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th width="5%">No</th>
+                    <th width="25%">Task Name</th>
+                    <th width="15%">Category</th>
+                    <th width="10%">Priority</th>
+                    <th width="15%">Due Date</th>
+                    <th width="10%">Days Left</th>
+                    <th width="15%">Status</th>
+                    <th width="5%">Done</th>
+                </tr>
+            </thead>
+            <tbody id="task-list">
+                <tr><td colspan="8" class="loading">Mengambil data dari Spreadsheet...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // GANTI URL INI DENGAN URL DEPLOYMENT APPS SCRIPT LO
+        const SCRIPT_URL = 'AKU_URL_APPS_SCRIPT_DISINI';
+
+        async function loadTasks() {
+            try {
+                const response = await fetch(`${SCRIPT_URL}?action=read`);
+                const json = await response.json();
+                const tasks = json.data;
+                renderTable(tasks);
+                updateHeader(tasks);
+            } catch (error) {
+                console.error("Error:", error);
+                document.getElementById('task-list').innerHTML = `<tr><td colspan="8" style="color:red; text-align:center;">Gagal memuat data. Cek koneksi atau URL Script.</td></tr>`;
+            }
+        }
+
+        function renderTable(tasks) {
+            const tbody = document.getElementById('task-list');
+            tbody.innerHTML = '';
+
+            tasks.forEach(task => {
+                // Skip baris kosong
+                if (!task.no || task.no === "") return;
+
+                // Hitung Days Left
+                const today = new Date();
+                const due = new Date(task.duedate);
+                const diffTime = due - today;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                let daysText = diffDays + " days left";
+                let daysClass = "";
+                if (diffDays < 0) { daysText = Math.abs(diffDays) + " days late"; daysClass = "days-late"; }
+
+                // Category Class Logic
+                let catClass = 'cat-brainstorm';
+                const catLower = task.category.toString().toLowerCase();
+                if(catLower.includes('gadget')) catClass = 'cat-gadget';
+                else if(catLower.includes('vlog')) catClass = 'cat-vlog';
+                else if(catLower.includes('shorts')) catClass = 'cat-shorts';
+
+                // Priority Class
+                let prioClass = 'prio-low';
+                if(task.priority === 'High') prioClass = 'prio-high';
+                if(task.priority === 'Medium') prioClass = 'prio-medium';
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${task.no}</td>
+                    <td style="font-weight:500">${task.task}</td>
+                    <td><span class="badge ${catClass}">${task.category}</span></td>
+                    <td><span class="${prioClass}">${task.priority}</span></td>
+                    <td>${formatDate(task.duedate)}</td>
+                    <td class="days-left ${daysClass}">${daysText}</td>
+                    <td>
+                        <select onchange="updateStatus(${task.no}, this.value)">
+                            <option value="Not Started" ${task.status === 'Not Started' ? 'selected' : ''}>Not Started</option>
+                            <option value="Research" ${task.status === 'Research' ? 'selected' : ''}>Research</option>
+                            <option value="Scripting" ${task.status === 'Scripting' ? 'selected' : ''}>Scripting</option>
+                            <option value="In Review" ${task.status === 'In Review' ? 'selected' : ''}>In Review</option>
+                            <option value="Scheduling" ${task.status === 'Scheduling' ? 'selected' : ''}>Scheduling</option>
+                            <option value="Published" ${task.status === 'Published' ? 'selected' : ''}>Published</option>
+                        </select>
+                    </td>
+                    <td style="text-align:center;">
+                        <input type="checkbox" ${task.done === true ? 'checked' : ''} onchange="updateDone(${task.no}, this.checked)">
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function updateHeader(tasks) {
+            const doneCount = tasks.filter(t => t.done === true).length;
+            document.getElementById('progress-text').innerText = `Saat ini kamu sudah menyelesaikan ${doneCount} task ✅`;
+        }
+
+        function formatDate(dateString) {
+            if(!dateString) return "-";
+            const options = { day: 'numeric', month: 'short', year: 'numeric' };
+            return new Date(dateString).toLocaleDateString('id-ID', options);
+        }
+
+        // Fungsi kirim data balik ke Google Sheets
+        function updateStatus(id, newStatus) {
+            fetch(`${SCRIPT_URL}?action=update&no=${id}&status=${newStatus}`, { method: 'POST' });
+            // Kita gak perlu nunggu response biar UI terasa cepat (Optimistic UI simple)
+        }
+
+        function updateDone(id, isDone) {
+            fetch(`${SCRIPT_URL}?action=update&no=${id}&done=${isDone}`, { method: 'POST' });
+            // Update counter di header secara manual biar gak perlu reload
+            const currentText = document.getElementById('progress-text').innerText;
+            const currentCount = parseInt(currentText.match(/\d+/)[0]);
+            const newCount = isDone ? currentCount + 1 : currentCount - 1;
+            document.getElementById('progress-text').innerText = `Saat ini kamu sudah menyelesaikan ${newCount} task ✅`;
+        }
+
+        // Load data saat pertama kali buka
+        loadTasks();
+    </script>
+</body>
+</html>
