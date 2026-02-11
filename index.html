@@ -1,266 +1,542 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Andri's Content Planner</title>
     <style>
-        /* --- CSS UTAMA (GAK PERLU FILE LUAR) --- */
-        :root {
-            --primary: #2563eb; 
-            --bg: #f3f4f6;
-            --card: #ffffff;
-            --text: #1f2937;
-            --border: #e5e7eb;
-            --success: #16a34a;
-        }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
-        
-        .header { 
-            background: var(--primary); 
-            color: white; 
-            padding: 1.5rem; 
-            border-radius: 12px; 
-            margin-bottom: 20px; 
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;
-        }
-        .header h1 { margin: 0; font-size: 1.5rem; }
-        .header p { margin: 5px 0 0; opacity: 0.9; font-size: 0.9rem; }
+      :root {
+        --primary: #2563eb;
+        --bg: #f3f4f6;
+        --card: #ffffff;
+        --text: #1f2937;
+        --border: #e5e7eb;
+        --success: #16a34a;
+        --danger: #dc2626;
+      }
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 20px;
+      }
 
-        .btn-add { 
-            background: white; 
-            color: var(--primary); 
-            padding: 10px 20px; 
-            text-decoration: none; 
-            border-radius: 8px; 
-            font-weight: 700; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2); 
-            transition: 0.2s;
-            font-size: 0.95rem;
-        }
-        .btn-add:hover { background: #eff6ff; transform: translateY(-1px); }
+      /* HEADER */
+      .header {
+        background: var(--primary);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .header h1 {
+        margin: 0;
+        font-size: 1.5rem;
+      }
+      .header p {
+        margin: 5px 0 0;
+        opacity: 0.9;
+        font-size: 0.9rem;
+      }
 
-        .table-wrap { overflow-x: auto; background: var(--card); border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        table { width: 100%; border-collapse: collapse; min-width: 900px; }
-        th { background: #f8fafc; text-align: left; padding: 16px; font-weight: 600; color: #64748b; border-bottom: 2px solid var(--border); font-size: 1rem; }
-        td { padding: 14px 16px; border-bottom: 1px solid var(--border); vertical-align: middle; font-size: 1rem; }
-        tr:last-child td { border-bottom: none; }
-        tr:hover { background-color: #f8fafc; }
+      .btn-add {
+        background: white;
+        color: var(--primary);
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 700;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        transition: 0.2s;
+        font-size: 0.95rem;
+        cursor: pointer;
+        border: none;
+      }
+      .btn-add:hover {
+        background: #eff6ff;
+        transform: translateY(-1px);
+      }
 
-        .badge { padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; display: inline-block; white-space: nowrap; }
-        
-        .cat-gadget { background: #dbeafe; color: #1e40af; } 
-        .cat-vlog { background: #fef9c3; color: #854d0e; } 
-        .cat-shorts { background: #fee2e2; color: #991b1b; } 
-        .cat-brainstorm { background: #d1fae5; color: #065f46; } 
-        .cat-default { background: #f3f4f6; color: #4b5563; } 
+      /* TABEL */
+      .table-wrap {
+        overflow-x: auto;
+        background: var(--card);
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 1000px;
+      }
+      th {
+        background: #f8fafc;
+        text-align: left;
+        padding: 16px;
+        font-weight: 600;
+        color: #64748b;
+        border-bottom: 2px solid var(--border);
+        font-size: 1rem;
+      }
+      td {
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--border);
+        vertical-align: middle;
+        font-size: 1rem;
+      }
+      tr:last-child td {
+        border-bottom: none;
+      }
+      tr:hover {
+        background-color: #f8fafc;
+      }
 
-        .prio-high { color: #dc2626; font-weight: 700; }
-        .prio-medium { color: #d97706; font-weight: 600; }
-        .prio-low { color: #16a34a; font-weight: 600; }
+      /* BADGES */
+      .badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        display: inline-block;
+        white-space: nowrap;
+      }
+      .cat-gadget {
+        background: #dbeafe;
+        color: #1e40af;
+      }
+      .cat-vlog {
+        background: #fef9c3;
+        color: #854d0e;
+      }
+      .cat-shorts {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+      .cat-brainstorm {
+        background: #d1fae5;
+        color: #065f46;
+      }
+      .cat-default {
+        background: #f3f4f6;
+        color: #4b5563;
+      }
 
-        .days-ok { color: #4b5563; font-weight: 500; }
-        .days-today { color: #ea580c; font-weight: 800; }
-        .days-late { color: #dc2626; font-weight: 800; background: #fee2e2; padding: 4px 8px; border-radius: 6px; white-space: nowrap; }
-        .days-done { color: var(--success); font-weight: 700; background: #dcfce7; padding: 4px 10px; border-radius: 6px; white-space: nowrap; border: 1px solid #bbf7d0; }
+      .prio-high {
+        color: var(--danger);
+        font-weight: 700;
+      }
+      .prio-medium {
+        color: #d97706;
+        font-weight: 600;
+      }
+      .prio-low {
+        color: var(--success);
+        font-weight: 600;
+      }
 
-        select { padding: 8px; border: 1px solid var(--border); border-radius: 6px; background: white; font-size: 0.9rem; cursor: pointer; }
-        input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; accent-color: var(--success); }
-        
-        .loading { text-align: center; padding: 40px; color: #6b7280; font-style: italic; }
+      .days-ok {
+        color: #4b5563;
+        font-weight: 500;
+      }
+      .days-today {
+        color: #ea580c;
+        font-weight: 800;
+      }
+      .days-late {
+        color: var(--danger);
+        font-weight: 800;
+        background: #fee2e2;
+        padding: 4px 8px;
+        border-radius: 6px;
+        white-space: nowrap;
+      }
+      .days-done {
+        color: var(--success);
+        font-weight: 700;
+        background: #dcfce7;
+        padding: 4px 10px;
+        border-radius: 6px;
+        white-space: nowrap;
+        border: 1px solid #bbf7d0;
+      }
+
+      select {
+        padding: 8px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: white;
+        font-size: 0.9rem;
+        cursor: pointer;
+      }
+      input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        accent-color: var(--success);
+      }
+
+      /* TOMBOL AKSI */
+      .btn-action {
+        padding: 6px 10px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.85rem;
+        margin-right: 5px;
+      }
+      .btn-edit {
+        background: #f3f4f6;
+        color: #1f2937;
+        border: 1px solid #d1d5db;
+      }
+      .btn-edit:hover {
+        background: #e5e7eb;
+      }
+      .btn-delete {
+        background: #fee2e2;
+        color: var(--danger);
+        border: 1px solid #fca5a5;
+      }
+      .btn-delete:hover {
+        background: #fecaca;
+      }
+
+      /* MODAL (POP-UP) */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+      .modal-card {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        width: 100%;
+        max-width: 400px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      }
+      .form-group {
+        margin-bottom: 15px;
+      }
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 600;
+        font-size: 0.9rem;
+      }
+      .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        box-sizing: border-box;
+      }
+      .btn-submit {
+        background: var(--primary);
+        color: white;
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+      .btn-cancel {
+        background: transparent;
+        color: #6b7280;
+        width: 100%;
+        padding: 10px;
+        border: none;
+        cursor: pointer;
+        margin-top: 5px;
+        font-weight: 600;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 40px;
+        color: #6b7280;
+        font-style: italic;
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <div class="header">
-        <div>
-            <h1>🚀 Andri's Content Planner</h1>
-            <p id="progress-info">Memuat data...</p>
-        </div>
-        <a href="add.html" class="btn-add">+ Tambah Konten</a>
+      <div>
+        <h1>🚀 Andri's Content Planner</h1>
+        <p id="progress-info">Memuat data...</p>
+      </div>
+      <a href="add.html" class="btn-add">+ Tambah Konten</a>
     </div>
 
     <div class="table-wrap">
-        <table>
-            <thead>
-                <tr>
-                    <th width="5%">No</th>
-                    <th width="25%">Task Name</th>
-                    <th width="12%">Category</th>
-                    <th width="10%">Priority</th>
-                    <th width="12%">Due Date</th>
-                    <th width="12%">Days Left</th>
-                    <th width="15%">Status</th>
-                    <th width="5%" style="text-align:center">Done</th>
-                </tr>
-            </thead>
-            <tbody id="task-list">
-                <tr><td colspan="8" class="loading">Sedang mengambil data terbaru...</td></tr>
-            </tbody>
-        </table>
+      <table>
+        <thead>
+          <tr>
+            <th width="5%">No</th>
+            <th width="22%">Task Name</th>
+            <th width="12%">Category</th>
+            <th width="10%">Priority</th>
+            <th width="12%">Due Date</th>
+            <th width="10%">Days Left</th>
+            <th width="12%">Status</th>
+            <th width="5%" style="text-align: center">Done</th>
+            <th width="12%" style="text-align: center">Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="task-list">
+          <tr>
+            <td colspan="9" class="loading">Sedang mengambil data terbaru...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="modal-overlay" id="editModal">
+      <div class="modal-card">
+        <h3 style="margin-top: 0">✏️ Edit Konten</h3>
+        <form id="editForm">
+          <input type="hidden" id="edit-id" />
+          <div class="form-group">
+            <label>Task Name</label>
+            <input type="text" id="edit-task" class="form-control" required />
+          </div>
+          <div class="form-group">
+            <label>Category</label>
+            <select id="edit-category" class="form-control">
+              <option value="YT Gadget">YT Gadget</option>
+              <option value="YT Vlog">YT Vlog</option>
+              <option value="Shorts">Shorts</option>
+              <option value="Brainstorm">Brainstorm</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Priority</label>
+            <select id="edit-priority" class="form-control">
+              <option value="High">High 🔥</option>
+              <option value="Medium">Medium ⚠️</option>
+              <option value="Low">Low ☘️</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Due Date</label>
+            <input type="date" id="edit-duedate" class="form-control" required />
+          </div>
+          <button type="submit" class="btn-submit" id="btnSaveEdit">Simpan Perubahan</button>
+          <button type="button" class="btn-cancel" onclick="closeModal()">Batal</button>
+        </form>
+      </div>
     </div>
 
     <script>
-        // ==========================================
-        // PASTE URL APPS SCRIPT DI SINI!
-        // ==========================================
-        const API_URL = "https://script.google.com/macros/s/AKfycbzUuN3e88CYwvlRYNGLsYsDxFXxFHC0ZyWE4vPenzkn9927tetWD2K1c52XBp0X9FD3zg/exec"; 
+      // ==========================================
+      // PASTE URL APPS SCRIPT BARU DI SINI!
+      // ==========================================
+      const API_URL = "https://script.google.com/macros/s/AKfycbzUuN3e88CYwvlRYNGLsYsDxFXxFHC0ZyWE4vPenzkn9927tetWD2K1c52XBp0X9FD3zg/exec";
+      let globalTasks = []; // Simpan data sementara buat fitur edit
 
-        async function fetchData() {
-            try {
-                const res = await fetch(`${API_URL}?action=read`);
-                const json = await res.json();
-                renderTable(json.data);
-                updateStats(json.data);
-            } catch (err) {
-                document.getElementById('task-list').innerHTML = 
-                    `<tr><td colspan="8" style="text-align:center; color:red; padding:20px;">Gagal koneksi. Cek URL Script.</td></tr>`;
-            }
+      async function fetchData() {
+        try {
+          const res = await fetch(`${API_URL}?action=read`);
+          const json = await res.json();
+          globalTasks = json.data;
+          renderTable(globalTasks);
+          updateStats(globalTasks);
+        } catch (err) {
+          document.getElementById("task-list").innerHTML = `<tr><td colspan="9" style="text-align:center; color:red; padding:20px;">Gagal koneksi. Cek URL Script.</td></tr>`;
         }
+      }
 
-        function renderTable(tasks) {
-            const tbody = document.getElementById('task-list');
-            tbody.innerHTML = "";
+      function renderTable(tasks) {
+        const tbody = document.getElementById("task-list");
+        tbody.innerHTML = "";
 
-            tasks.forEach(task => {
-                if (!task.no) return; 
+        tasks.forEach((task) => {
+          if (!task.no) return;
 
-                const isFinished = (task.status === 'Published' || task.done === true);
-                const daysData = calculateDays(task.duedate); // Hitung hari
-                
-                let daysText = daysData.text;
-                let daysClass = daysData.class;
+          const isFinished = task.status === "Published" || task.done === true;
+          const daysData = calculateDays(task.duedate);
 
-                // Override tampilan jika status sudah selesai
-                if (isFinished) {
-                    daysText = "Selesai ✅";
-                    daysClass = "days-done";
-                }
+          let daysText = isFinished ? "Selesai ✅" : daysData.text;
+          let daysClass = isFinished ? "days-done" : daysData.class;
 
-                // Styling Kategori
-                let catClass = 'cat-default';
-                const c = task.category ? task.category.toLowerCase() : "";
-                if(c.includes('gadget')) catClass = 'cat-gadget';
-                else if(c.includes('vlog')) catClass = 'cat-vlog';
-                else if(c.includes('short')) catClass = 'cat-shorts';
-                else if(c.includes('brain')) catClass = 'cat-brainstorm';
+          let catClass = "cat-default";
+          const c = task.category ? task.category.toLowerCase() : "";
+          if (c.includes("gadget")) catClass = "cat-gadget";
+          else if (c.includes("vlog")) catClass = "cat-vlog";
+          else if (c.includes("short")) catClass = "cat-shorts";
+          else if (c.includes("brain")) catClass = "cat-brainstorm";
 
-                // Styling Priority
-                let prioClass = 'prio-low';
-                if(task.priority === 'High') prioClass = 'prio-high';
-                if(task.priority === 'Medium') prioClass = 'prio-medium';
+          let prioClass = "prio-low";
+          if (task.priority === "High") prioClass = "prio-high";
+          if (task.priority === "Medium") prioClass = "prio-medium";
 
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
                     <td>#${task.no}</td>
                     <td style="font-weight:500; font-size:1.05rem;">${task.task}</td>
                     <td><span class="badge ${catClass}">${task.category}</span></td>
                     <td><span class="${prioClass}">${task.priority}</span></td>
                     <td>${formatDate(task.duedate)}</td>
-                    
                     <td><span id="days-${task.no}" class="${daysClass}">${daysText}</span></td>
-                    
                     <td>
                         <select onchange="handleStatusChange(${task.no}, this.value, '${task.duedate}')">
-                            <option value="Not Started" ${task.status === 'Not Started' ? 'selected' : ''}>Not Started</option>
-                            <option value="Research" ${task.status === 'Research' ? 'selected' : ''}>Research</option>
-                            <option value="Scripting" ${task.status === 'Scripting' ? 'selected' : ''}>Scripting</option>
-                            <option value="In Review" ${task.status === 'In Review' ? 'selected' : ''}>In Review</option>
-                            <option value="Scheduling" ${task.status === 'Scheduling' ? 'selected' : ''}>Scheduling</option>
-                            <option value="Published" ${task.status === 'Published' ? 'selected' : ''}>Published</option>
+                            <option value="Not Started" ${task.status === "Not Started" ? "selected" : ""}>Not Started</option>
+                            <option value="Research" ${task.status === "Research" ? "selected" : ""}>Research</option>
+                            <option value="Scripting" ${task.status === "Scripting" ? "selected" : ""}>Scripting</option>
+                            <option value="In Review" ${task.status === "In Review" ? "selected" : ""}>In Review</option>
+                            <option value="Scheduling" ${task.status === "Scheduling" ? "selected" : ""}>Scheduling</option>
+                            <option value="Published" ${task.status === "Published" ? "selected" : ""}>Published</option>
                         </select>
                     </td>
                     <td style="text-align:center">
-                        <input type="checkbox" id="check-${task.no}" ${task.done === true ? 'checked' : ''} 
-                        onchange="updateData(${task.no}, 'done', this.checked)">
+                        <input type="checkbox" id="check-${task.no}" ${task.done === true ? "checked" : ""} 
+                        onchange="updateQuick(${task.no}, 'done', this.checked)">
+                    </td>
+                    <td style="text-align:center; white-space:nowrap;">
+                        <button class="btn-action btn-edit" onclick="openModal(${task.no})">✏️ Edit</button>
+                        <button class="btn-action btn-delete" onclick="deleteTask(${task.no})">🗑️</button>
                     </td>
                 `;
-                tbody.appendChild(tr);
-            });
+          tbody.appendChild(tr);
+        });
+      }
+
+      // --- FUNGSI HAPUS (DELETE) ---
+      async function deleteTask(id) {
+        if (confirm("Yakin mau hapus konten ini?")) {
+          document.getElementById("task-list").innerHTML = `<tr><td colspan="9" class="loading">Menghapus data...</td></tr>`;
+          await fetch(`${API_URL}?action=delete&no=${id}`, { method: "POST" });
+          fetchData(); // Reload data
         }
+      }
 
-        // --- LOGIKA UTAMA PERBAIKAN ---
-        function handleStatusChange(id, newStatus, duedate) {
-            // 1. Update Status ke Database
-            updateData(id, 'status', newStatus);
+      // --- FUNGSI EDIT MODAL ---
+      function openModal(id) {
+        const task = globalTasks.find((t) => t.no == id);
+        if (task) {
+          document.getElementById("edit-id").value = task.no;
+          document.getElementById("edit-task").value = task.task;
+          document.getElementById("edit-category").value = task.category;
+          document.getElementById("edit-priority").value = task.priority;
 
-            const checkbox = document.getElementById(`check-${id}`);
-            const daysLabel = document.getElementById(`days-${id}`);
+          // Format tanggal ISO buat input type="date"
+          if (task.duedate) {
+            const dateObj = new Date(task.duedate);
+            const isoDate = dateObj.toISOString().split("T")[0];
+            document.getElementById("edit-duedate").value = isoDate;
+          }
 
-            if (newStatus === 'Published') {
-                // LOGIKA MAJU (Selesai)
-                if(checkbox) {
-                    checkbox.checked = true;
-                    updateData(id, 'done', true); 
-                }
-                if(daysLabel) {
-                    daysLabel.innerText = "Selesai ✅";
-                    daysLabel.className = "days-done";
-                }
-            } else {
-                // LOGIKA MUNDUR (Revisi/Balik lagi)
-                // 1. Uncheck box jika tadinya tercentang
-                if(checkbox && checkbox.checked) {
-                    checkbox.checked = false;
-                    updateData(id, 'done', false);
-                }
-
-                // 2. Hitung ulang hari (Recalculate)
-                // Kita hitung manual di sini biar gak perlu reload page
-                const daysData = calculateDays(duedate);
-                if(daysLabel) {
-                    daysLabel.innerText = daysData.text;
-                    daysLabel.className = daysData.class;
-                }
-            }
+          document.getElementById("editModal").style.display = "flex";
         }
+      }
 
-        // Helper: Hitung Hari
-        function calculateDays(dateStr) {
-            const due = new Date(dateStr);
-            const today = new Date();
-            due.setHours(0,0,0,0);
-            today.setHours(0,0,0,0);
-            
-            const diffDays = Math.ceil((due - today) / (1000 * 60 * 60 * 24));
-            
-            if (diffDays < 0) return { text: `Telat ${Math.abs(diffDays)} hari`, class: "days-late" };
-            if (diffDays === 0) return { text: "HARI INI!", class: "days-today" };
-            return { text: `${diffDays} hari lagi`, class: "days-ok" };
+      function closeModal() {
+        document.getElementById("editModal").style.display = "none";
+      }
+
+      // Simpan Hasil Edit
+      document.getElementById("editForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const btn = document.getElementById("btnSaveEdit");
+        btn.innerText = "Menyimpan...";
+        btn.disabled = true;
+
+        const id = document.getElementById("edit-id").value;
+        const task = encodeURIComponent(document.getElementById("edit-task").value);
+        const cat = encodeURIComponent(document.getElementById("edit-category").value);
+        const prio = encodeURIComponent(document.getElementById("edit-priority").value);
+        const due = encodeURIComponent(document.getElementById("edit-duedate").value);
+
+        const url = `${API_URL}?action=update&no=${id}&task=${task}&category=${cat}&priority=${prio}&duedate=${due}`;
+
+        await fetch(url, { method: "POST" });
+
+        closeModal();
+        btn.innerText = "Simpan Perubahan";
+        btn.disabled = false;
+
+        document.getElementById("task-list").innerHTML = `<tr><td colspan="9" class="loading">Memperbarui data...</td></tr>`;
+        fetchData(); // Reload tabel
+      });
+
+      // --- LOGIKA UPDATE STATUS & CHECKBOX (Sama kayak sebelumnya) ---
+      function handleStatusChange(id, newStatus, duedate) {
+        updateQuick(id, "status", newStatus);
+        const checkbox = document.getElementById(`check-${id}`);
+        const daysLabel = document.getElementById(`days-${id}`);
+
+        if (newStatus === "Published") {
+          if (checkbox) {
+            checkbox.checked = true;
+            updateQuick(id, "done", true);
+          }
+          if (daysLabel) {
+            daysLabel.innerText = "Selesai ✅";
+            daysLabel.className = "days-done";
+          }
+        } else {
+          if (checkbox && checkbox.checked) {
+            checkbox.checked = false;
+            updateQuick(id, "done", false);
+          }
+          const daysData = calculateDays(duedate);
+          if (daysLabel) {
+            daysLabel.innerText = daysData.text;
+            daysLabel.className = daysData.class;
+          }
         }
+      }
 
-        function updateData(id, type, value) {
-            let url = `${API_URL}?action=update&no=${id}`;
-            if (type === 'status') url += `&status=${value}`;
-            if (type === 'done') url += `&done=${value}`;
+      function updateQuick(id, type, value) {
+        let url = `${API_URL}?action=update&no=${id}&${type}=${value}`;
+        fetch(url, { method: "POST" });
+        setTimeout(() => {
+          const total = document.querySelectorAll("#task-list tr").length;
+          const done = document.querySelectorAll('input[type="checkbox"]:checked').length;
+          document.getElementById("progress-info").innerHTML = `Progress: <b>${done}</b> selesai dari <b>${total}</b> konten.`;
+        }, 500);
+      }
 
-            fetch(url, { method: 'POST' });
-            
-            // Update Text Header Info (Simulasi visual)
-            setTimeout(() => {
-                 const total = document.querySelectorAll('#task-list tr').length;
-                 const done = document.querySelectorAll('input[type="checkbox"]:checked').length;
-                 document.getElementById('progress-info').innerHTML = 
-                    `Progress: <b>${done}</b> selesai dari <b>${total}</b> konten.`;
-            }, 500);
-        }
+      function calculateDays(dateStr) {
+        const due = new Date(dateStr);
+        const today = new Date();
+        due.setHours(0, 0, 0, 0);
+        today.setHours(0, 0, 0, 0);
+        const diffDays = Math.ceil((due - today) / (1000 * 60 * 60 * 24));
 
-        function updateStats(tasks) {
-            const total = tasks.filter(t => t.no).length;
-            const done = tasks.filter(t => t.done === true).length;
-            document.getElementById('progress-info').innerHTML = 
-                `Progress: <b>${done}</b> selesai dari <b>${total}</b> konten. Semangat! 🔥`;
-        }
+        if (diffDays < 0) return { text: `Telat ${Math.abs(diffDays)} hari`, class: "days-late" };
+        if (diffDays === 0) return { text: "HARI INI!", class: "days-today" };
+        return { text: `${diffDays} hari lagi`, class: "days-ok" };
+      }
 
-        function formatDate(isoDate) {
-            if(!isoDate) return "-";
-            return new Date(isoDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
-        }
+      function updateStats(tasks) {
+        const total = tasks.filter((t) => t.no).length;
+        const done = tasks.filter((t) => t.done === true).length;
+        document.getElementById("progress-info").innerHTML = `Progress: <b>${done}</b> selesai dari <b>${total}</b> konten. Semangat! 🔥`;
+      }
 
-        fetchData();
+      function formatDate(isoDate) {
+        if (!isoDate) return "-";
+        return new Date(isoDate).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" });
+      }
+
+      fetchData();
     </script>
-</body>
+  </body>
 </html>
