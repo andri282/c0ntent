@@ -1,77 +1,135 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tambah Konten</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f3f4f6; color: #1f2937; padding: 20px; }
-        .form-card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-width: 500px; margin: 40px auto; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; }
-        input, select { width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; box-sizing: border-box; }
-        .btn-submit { background: #2563eb; color: white; width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer; font-weight: bold; }
-        .btn-submit:hover { background: #1d4ed8; }
-        .btn-back { display: block; text-align: center; margin-top: 15px; color: #6b7280; text-decoration: none; }
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background: #f3f4f6;
+        color: #1f2937;
+        padding: 20px;
+      }
+      .form-card {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        max-width: 500px;
+        margin: 40px auto;
+      }
+      .form-group {
+        margin-bottom: 20px;
+      }
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+      }
+      input,
+      select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        box-sizing: border-box;
+      }
+      .btn-submit {
+        background: #2563eb;
+        color: white;
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+        font-weight: bold;
+      }
+      .btn-submit:hover {
+        background: #1d4ed8;
+      }
+      .btn-back {
+        display: block;
+        text-align: center;
+        margin-top: 15px;
+        color: #6b7280;
+        text-decoration: none;
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <div class="form-card">
-        <h2 style="text-align:center; margin-top:0;">📝 Tambah Ide Baru</h2>
-        <form id="addForm">
-            <div class="form-group">
-                <label>Judul Konten</label>
-                <input type="text" name="task" placeholder="Contoh: Review Xiaomi 14" required>
-            </div>
-            <div class="form-group">
-                <label>Kategori</label>
-                <select name="category">
-                    <option value="YT Gadget">YT Gadget</option>
-                    <option value="YT Vlog">YT Vlog</option>
-                    <option value="Shorts">Shorts</option>
-                    <option value="Brainstorm">Brainstorm</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Prioritas</label>
-                <select name="priority">
-                    <option value="High">High 🔥</option>
-                    <option value="Medium">Medium ⚠️</option>
-                    <option value="Low">Low ☘️</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Due Date</label>
-                <input type="date" name="duedate" required>
-            </div>
-            <button type="submit" class="btn-submit" id="submitBtn">Simpan</button>
-            <a href="index.html" class="btn-back">Batal & Kembali</a>
-        </form>
+      <h2 style="text-align: center; margin-top: 0">📝 Tambah Ide Baru</h2>
+      <p style="text-align: center; color: #666; font-size: 0.9rem">User: <span id="display-user" style="font-weight: bold; color: #2563eb">...</span></p>
+
+      <form id="addForm">
+        <div class="form-group">
+          <label>Judul Konten</label>
+          <input type="text" name="task" placeholder="Contoh: Review Xiaomi 14" required />
+        </div>
+        <div class="form-group">
+          <label>Kategori</label>
+          <select name="category">
+            <option value="YT Gadget">YT Gadget</option>
+            <option value="YT Vlog">YT Vlog</option>
+            <option value="Shorts">Shorts</option>
+            <option value="Brainstorm">Brainstorm</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Prioritas</label>
+          <select name="priority">
+            <option value="High">High 🔥</option>
+            <option value="Medium">Medium ⚠️</option>
+            <option value="Low">Low ☘️</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Due Date</label>
+          <input type="date" name="duedate" required />
+        </div>
+        <button type="submit" class="btn-submit" id="submitBtn">Simpan</button>
+        <a href="index.html" class="btn-back">Batal & Kembali</a>
+      </form>
     </div>
 
     <script>
-        // MASUKKAN URL YANG SAMA
-        const API_URL = "https://script.google.com/macros/s/AKfycbzUuN3e88CYwvlRYNGLsYsDxFXxFHC0ZyWE4vPenzkn9927tetWD2K1c52XBp0X9FD3zg/exec"; 
+      // PENTING: PASTIKAN INI ADALAH URL DARI DEPLOYMENT TERBARU (YANG SUDAH ADA KODE USERNYA)
+      const API_URL = "https://script.google.com/macros/s/AKfycbzUuN3e88CYwvlRYNGLsYsDxFXxFHC0ZyWE4vPenzkn9927tetWD2K1c52XBp0X9FD3zg/exec";
 
-        document.getElementById('addForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            btn.innerText = "Menyimpan...";
-            btn.disabled = true;
+      // 1. Ambil username dari LocalStorage (yang disimpan pas Login di index.html)
+      const currentUser = localStorage.getItem("planner_user");
 
-            const formData = new FormData(this);
-            const data = new URLSearchParams(formData);
+      // Kalau user coba buka halaman ini tanpa login, tendang balik
+      if (!currentUser) {
+        alert("Eits, login dulu bos!");
+        window.location.href = "index.html";
+      } else {
+        document.getElementById("display-user").innerText = currentUser;
+      }
 
-            try {
-                await fetch(`${API_URL}?action=create&${data.toString()}`, { method: 'POST' });
-                window.location.href = "index.html"; 
-            } catch (error) {
-                alert("Gagal. Cek koneksi.");
-                btn.innerText = "Simpan";
-                btn.disabled = false;
-            }
-        });
+      document.getElementById("addForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const btn = document.getElementById("submitBtn");
+        btn.innerText = "Menyimpan...";
+        btn.disabled = true;
+
+        const formData = new FormData(this);
+        const data = new URLSearchParams(formData);
+
+        try {
+          // 2. Kirim parameter 'username' ke Apps Script biar kesimpen di sheet
+          await fetch(`${API_URL}?action=create&username=${currentUser}&${data.toString()}`, { method: "POST" });
+
+          // Redirect balik ke dashboard setelah sukses
+          window.location.href = "index.html";
+        } catch (error) {
+          alert("Gagal menyimpan. Cek koneksi internet.");
+          btn.innerText = "Simpan";
+          btn.disabled = false;
+        }
+      });
     </script>
-</body>
+  </body>
 </html>
