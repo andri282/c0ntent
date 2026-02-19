@@ -66,17 +66,22 @@
       <form id="addForm">
         <div class="form-group">
           <label>Judul Konten</label>
-          <input type="text" name="task" placeholder="Contoh: Review Xiaomi 14" required />
+          <input type="text" name="task" placeholder="Contoh: Mukbang Bakso 5kg" required />
         </div>
+
         <div class="form-group">
-          <label>Kategori</label>
-          <select name="category">
-            <option value="YT Gadget">YT Gadget</option>
-            <option value="YT Vlog">YT Vlog</option>
-            <option value="Shorts">Shorts</option>
-            <option value="Brainstorm">Brainstorm</option>
-          </select>
+          <label>Kategori (Pilih atau Ketik Baru)</label>
+          <input type="text" name="category" list="cat-suggestions" placeholder="Misal: Kuliner, Daily, dll" required />
+          <datalist id="cat-suggestions">
+            <option value="YT Gadget"></option>
+            <option value="YT Vlog"></option>
+            <option value="Shorts"></option>
+            <option value="Brainstorm"></option>
+            <option value="Kuliner"></option>
+            <option value="Gaming"></option>
+          </datalist>
         </div>
+
         <div class="form-group">
           <label>Prioritas</label>
           <select name="priority">
@@ -95,15 +100,11 @@
     </div>
 
     <script>
-      // PENTING: PASTIKAN INI ADALAH URL DARI DEPLOYMENT TERBARU (YANG SUDAH ADA KODE USERNYA)
-      const API_URL = "https://script.google.com/macros/s/AKfycbzUuN3e88CYwvlRYNGLsYsDxFXxFHC0ZyWE4vPenzkn9927tetWD2K1c52XBp0X9FD3zg/exec";
-
-      // 1. Ambil username dari LocalStorage (yang disimpan pas Login di index.html)
+      const API_URL = "MASUKKAN_URL_SCRIPT_GOOGLE_DISINI";
       const currentUser = localStorage.getItem("planner_user");
 
-      // Kalau user coba buka halaman ini tanpa login, tendang balik
       if (!currentUser) {
-        alert("Eits, login dulu bos!");
+        alert("Login dulu bos!");
         window.location.href = "index.html";
       } else {
         document.getElementById("display-user").innerText = currentUser;
@@ -119,13 +120,10 @@
         const data = new URLSearchParams(formData);
 
         try {
-          // 2. Kirim parameter 'username' ke Apps Script biar kesimpen di sheet
           await fetch(`${API_URL}?action=create&username=${currentUser}&${data.toString()}`, { method: "POST" });
-
-          // Redirect balik ke dashboard setelah sukses
           window.location.href = "index.html";
         } catch (error) {
-          alert("Gagal menyimpan. Cek koneksi internet.");
+          alert("Gagal. Cek koneksi.");
           btn.innerText = "Simpan";
           btn.disabled = false;
         }

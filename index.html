@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>To Do Activity</title>
+    <title>Planner Multi-User</title>
     <style>
       :root {
         --primary: #2563eb;
@@ -22,7 +22,7 @@
         padding: 20px;
       }
 
-      /* --- LOGIN SCREEN STYLE --- */
+      /* LOGIN & LAYOUT STYLE (SAMA) */
       #login-screen {
         position: fixed;
         top: 0;
@@ -44,10 +44,6 @@
         max-width: 350px;
         text-align: center;
       }
-      .login-card h2 {
-        margin-top: 0;
-        color: var(--primary);
-      }
       .login-card input {
         width: 100%;
         padding: 12px;
@@ -67,16 +63,23 @@
         font-weight: bold;
         cursor: pointer;
         font-size: 1rem;
+        transition: 0.2s;
       }
       .btn-login:hover {
         background: #1d4ed8;
       }
+      .toggle-link {
+        display: block;
+        margin-top: 15px;
+        font-size: 0.9rem;
+        color: #666;
+        cursor: pointer;
+        text-decoration: underline;
+      }
 
-      /* --- DASHBOARD STYLE (UI GANTENG) --- */
       #dashboard-screen {
         display: none;
       }
-
       .header {
         background: var(--primary);
         color: white;
@@ -101,11 +104,6 @@
         font-weight: bold;
       }
 
-      .btn-group {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
       .btn-add {
         background: white;
         color: var(--primary);
@@ -117,10 +115,6 @@
         border: none;
         transition: 0.2s;
       }
-      .btn-add:hover {
-        background: #eff6ff;
-        transform: translateY(-1px);
-      }
       .btn-logout {
         background: transparent;
         border: 1px solid rgba(255, 255, 255, 0.5);
@@ -129,14 +123,9 @@
         border-radius: 8px;
         cursor: pointer;
         font-size: 0.9rem;
-        transition: 0.2s;
-      }
-      .btn-logout:hover {
-        background: rgba(255, 255, 255, 0.1);
-        border-color: white;
+        margin-left: 10px;
       }
 
-      /* TABEL STYLE (LEGA & RAPI) */
       .table-wrap {
         overflow-x: auto;
         background: var(--card);
@@ -147,7 +136,7 @@
         width: 100%;
         border-collapse: collapse;
         min-width: 1100px;
-      } /* Lebar min digedein biar lega */
+      }
       th {
         background: #f8fafc;
         text-align: left;
@@ -166,7 +155,7 @@
         background-color: #f8fafc;
       }
 
-      /* BADGES */
+      /* BADGE UMUM */
       .badge {
         padding: 6px 12px;
         border-radius: 20px;
@@ -175,29 +164,39 @@
         text-transform: uppercase;
         display: inline-block;
         white-space: nowrap;
-      }
-      .cat-gadget {
-        background: #dbeafe;
-        color: #1e40af;
-      }
-      .cat-vlog {
-        background: #fef9c3;
-        color: #854d0e;
-      }
-      .cat-shorts {
-        background: #fee2e2;
-        color: #991b1b;
-      }
-      .cat-brainstorm {
-        background: #d1fae5;
-        color: #065f46;
-      }
-      .cat-default {
-        background: #f3f4f6;
-        color: #4b5563;
+        letter-spacing: 0.5px;
       }
 
-      /* PRIORITY COLORS */
+      /* PALET WARNA DINAMIS (Ini Rahasianya!) */
+      .color-1 {
+        background: #dbeafe;
+        color: #1e40af;
+      } /* Biru */
+      .color-2 {
+        background: #fef9c3;
+        color: #854d0e;
+      } /* Kuning */
+      .color-3 {
+        background: #fee2e2;
+        color: #991b1b;
+      } /* Merah */
+      .color-4 {
+        background: #d1fae5;
+        color: #065f46;
+      } /* Hijau */
+      .color-5 {
+        background: #f3e8ff;
+        color: #6b21a8;
+      } /* Ungu */
+      .color-6 {
+        background: #ffedd5;
+        color: #9a3412;
+      } /* Orange */
+      .color-0 {
+        background: #f3f4f6;
+        color: #4b5563;
+      } /* Abu (Default) */
+
       .prio-high {
         color: var(--danger);
         font-weight: 700;
@@ -211,15 +210,6 @@
         font-weight: 600;
       }
 
-      /* DAYS LEFT STYLE */
-      .days-ok {
-        color: #4b5563;
-        font-weight: 500;
-      }
-      .days-today {
-        color: #ea580c;
-        font-weight: 800;
-      }
       .days-late {
         color: var(--danger);
         font-weight: 800;
@@ -238,7 +228,8 @@
         border: 1px solid #bbf7d0;
       }
 
-      select {
+      select,
+      input[list] {
         padding: 8px;
         border: 1px solid var(--border);
         border-radius: 6px;
@@ -253,7 +244,6 @@
         accent-color: var(--success);
       }
 
-      /* ACTION BUTTONS */
       .btn-action {
         padding: 8px 12px;
         border-radius: 6px;
@@ -262,30 +252,18 @@
         margin-right: 5px;
         transition: all 0.2s;
       }
-
-      /* Edit: Abu-abu Soft (Netral) */
       .btn-edit {
         background: #f3f4f6;
         border: 1px solid #d1d5db;
         color: #374151;
       }
-      .btn-edit:hover {
-        background: #e5e7eb;
-        border-color: #9ca3af;
-      }
-
-      /* Delete: Merah Muda Pucat (Warning tapi Sopan) */
       .btn-delete {
         background: #fee2e2;
         color: #dc2626;
         border: 1px solid #fca5a5;
       }
-      .btn-delete:hover {
-        background: #fecaca;
-        border-color: #ef4444;
-      }
 
-      /* MODAL STYLE */
+      /* MODAL */
       .modal-overlay {
         display: none;
         position: fixed;
@@ -354,12 +332,13 @@
   <body>
     <div id="login-screen">
       <div class="login-card">
-        <h2>🔐 To Do Activity</h2>
+        <h2 id="login-title">🔐 Login Planner</h2>
         <p style="color: #666; font-size: 0.9rem; margin-bottom: 20px">Masukkan Nama & PIN Anda</p>
         <input type="text" id="login-user" placeholder="Username (misal: Andri)" required />
         <input type="password" id="login-pin" placeholder="PIN (misal: 1234)" required />
-        <button class="btn-login" onclick="doLogin()">Masuk</button>
+        <button class="btn-login" id="btn-login-action" onclick="doLogin()">Masuk</button>
         <p id="login-msg" style="color: red; margin-top: 10px; font-size: 0.9rem"></p>
+        <span class="toggle-link" id="toggle-text" onclick="switchMode()">Belum punya akun? Daftar</span>
       </div>
     </div>
 
@@ -369,7 +348,7 @@
           <h1>🚀 Dashboard <span id="display-user" class="user-badge"></span></h1>
           <p id="progress-info">Memuat data...</p>
         </div>
-        <div class="btn-group">
+        <div style="display: flex; align-items: center">
           <a href="add.html" class="btn-add">+ Tambah Konten</a>
           <button class="btn-logout" onclick="doLogout()">Keluar</button>
         </div>
@@ -381,7 +360,7 @@
             <tr>
               <th width="5%">No</th>
               <th width="20%">Task Name</th>
-              <th width="12%">Category</th>
+              <th width="15%">Category</th>
               <th width="10%">Priority</th>
               <th width="12%">Due Date</th>
               <th width="12%">Days Left</th>
@@ -409,13 +388,9 @@
             <input type="text" id="edit-task" class="form-control" placeholder="Judul" required />
           </div>
           <div class="form-group">
-            <label>Kategori</label>
-            <select id="edit-category" class="form-control">
-              <option value="YT Gadget">YT Gadget</option>
-              <option value="YT Vlog">YT Vlog</option>
-              <option value="Shorts">Shorts</option>
-              <option value="Brainstorm">Brainstorm</option>
-            </select>
+            <label>Kategori (Ketik baru / Pilih)</label>
+            <input type="text" id="edit-category" list="category-options" class="form-control" placeholder="Ketik kategori..." required />
+            <datalist id="category-options"> </datalist>
           </div>
           <div class="form-group">
             <label>Prioritas</label>
@@ -436,55 +411,104 @@
     </div>
 
     <script>
-      // MASUKKAN URL DEPLOYMENT APPS SCRIPT DI SINI
       const API_URL = "https://script.google.com/macros/s/AKfycbzUuN3e88CYwvlRYNGLsYsDxFXxFHC0ZyWE4vPenzkn9927tetWD2K1c52XBp0X9FD3zg/exec";
 
       let CURRENT_USER = localStorage.getItem("planner_user") || null;
       let globalTasks = [];
+      let isRegisterMode = false;
 
-      // --- SISTEM LOGIN ---
+      // --- LOGIN & REGISTER ---
       function checkSession() {
         if (CURRENT_USER) {
           document.getElementById("login-screen").style.display = "none";
           document.getElementById("dashboard-screen").style.display = "block";
           document.getElementById("display-user").innerText = CURRENT_USER;
-          fetchData(); // Load data user ini
+          fetchData();
         } else {
           document.getElementById("login-screen").style.display = "flex";
           document.getElementById("dashboard-screen").style.display = "none";
         }
       }
 
+      function switchMode() {
+        isRegisterMode = !isRegisterMode;
+        const title = document.getElementById("login-title");
+        const btn = document.getElementById("btn-login-action");
+        const toggle = document.getElementById("toggle-text");
+        const msg = document.getElementById("login-msg");
+        msg.innerText = "";
+
+        if (isRegisterMode) {
+          title.innerText = "📝 Daftar Akun Baru";
+          btn.innerText = "Daftar Sekarang";
+          btn.onclick = doRegister;
+          toggle.innerText = "Sudah punya akun? Login";
+        } else {
+          title.innerText = "🔐 Login Planner";
+          btn.innerText = "Masuk";
+          btn.onclick = doLogin;
+          toggle.innerText = "Belum punya akun? Daftar";
+        }
+      }
+
       async function doLogin() {
         const user = document.getElementById("login-user").value;
         const pin = document.getElementById("login-pin").value;
-        const btn = document.querySelector(".btn-login");
+        const btn = document.getElementById("btn-login-action");
         const msg = document.getElementById("login-msg");
 
         if (!user || !pin) {
           msg.innerText = "Isi semua kolom!";
           return;
         }
-
         btn.innerText = "Mengecek...";
         btn.disabled = true;
 
         try {
           const res = await fetch(`${API_URL}?action=login&username=${user}&pin=${pin}`);
           const json = await res.json();
-
           if (json.result === "success") {
             localStorage.setItem("planner_user", json.username);
             CURRENT_USER = json.username;
             msg.innerText = "";
             checkSession();
           } else {
-            msg.innerText = "Login Gagal: " + json.message;
+            msg.innerText = "Gagal: " + json.message;
           }
         } catch (e) {
-          msg.innerText = "Error koneksi / Script URL salah.";
+          msg.innerText = "Error koneksi.";
         } finally {
           btn.innerText = "Masuk";
+          btn.disabled = false;
+        }
+      }
+
+      async function doRegister() {
+        const user = document.getElementById("login-user").value;
+        const pin = document.getElementById("login-pin").value;
+        const btn = document.getElementById("btn-login-action");
+        const msg = document.getElementById("login-msg");
+
+        if (!user || !pin) {
+          msg.innerText = "Isi semua kolom!";
+          return;
+        }
+        btn.innerText = "Mendaftarkan...";
+        btn.disabled = true;
+
+        try {
+          const res = await fetch(`${API_URL}?action=register&username=${user}&pin=${pin}`);
+          const json = await res.json();
+          if (json.result === "success") {
+            alert("Pendaftaran Berhasil! Silakan Login.");
+            switchMode();
+          } else {
+            msg.innerText = "Gagal: " + json.message;
+          }
+        } catch (e) {
+          msg.innerText = "Error koneksi.";
+        } finally {
+          btn.innerText = "Daftar Sekarang";
           btn.disabled = false;
         }
       }
@@ -496,25 +520,25 @@
         }
       }
 
-      // --- FETCH DATA ---
+      // --- FETCH DATA & RENDER ---
       async function fetchData() {
         try {
           const res = await fetch(`${API_URL}?action=read&username=${CURRENT_USER}`);
           const json = await res.json();
           globalTasks = json.data || [];
           renderTable(globalTasks);
+          updateCategoryList(globalTasks); // Update opsi kategori
         } catch (err) {
           console.error(err);
         }
       }
 
-      // --- RENDER TABLE (VERSI GANTENG DIKEMBALIKAN!) ---
       function renderTable(tasks) {
         const tbody = document.getElementById("task-list");
         tbody.innerHTML = "";
 
         if (tasks.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:40px; color:#666;">Belum ada data. Klik tombol <b>+ Tambah Konten</b> di atas!</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:40px; color:#666;">Belum ada data.</td></tr>`;
           document.getElementById("progress-info").innerText = "0 Konten.";
           return;
         }
@@ -524,67 +548,42 @@
 
         tasks.forEach((task) => {
           const isFinished = task.status === "Published" || task.done === true;
-
-          // Hitung Days Left
           const due = new Date(task.duedate);
           const today = new Date();
           due.setHours(0, 0, 0, 0);
           today.setHours(0, 0, 0, 0);
           const diffDays = Math.ceil((due - today) / (1000 * 60 * 60 * 24));
 
-          let daysText = "";
-          let daysClass = "";
+          let daysText = isFinished ? "Selesai ✅" : diffDays < 0 ? `Telat ${Math.abs(diffDays)} hari` : diffDays === 0 ? "HARI INI!" : `${diffDays} hari lagi`;
+          let daysClass = isFinished ? "days-done" : diffDays < 0 ? "days-late" : diffDays === 0 ? "days-today" : "days-ok";
 
-          if (isFinished) {
-            daysText = "Selesai ✅";
-            daysClass = "days-done";
-          } else {
-            if (diffDays < 0) {
-              daysText = `Telat ${Math.abs(diffDays)} hari`;
-              daysClass = "days-late";
-            } else if (diffDays === 0) {
-              daysText = "HARI INI!";
-              daysClass = "days-today";
-            } else {
-              daysText = `${diffDays} hari lagi`;
-              daysClass = "days-ok";
-            }
+          // --- LOGIKA WARNA KATEGORI OTOMATIS ---
+          // Kita generate angka dari huruf pertama kategori biar warnanya konsisten
+          // Misal: "Masak" selalu warna 1, "Vlog" selalu warna 2
+          let catClass = "color-0";
+          if (task.category) {
+            const firstChar = task.category.charCodeAt(0);
+            const colorIndex = (firstChar % 6) + 1; // Pilih warna 1-6
+            catClass = `color-${colorIndex}`;
           }
 
-          // Styling Kategori
-          let catClass = "cat-default";
-          const c = task.category ? task.category.toLowerCase() : "";
-          if (c.includes("gadget")) catClass = "cat-gadget";
-          else if (c.includes("vlog")) catClass = "cat-vlog";
-          else if (c.includes("short")) catClass = "cat-shorts";
-          else if (c.includes("brain")) catClass = "cat-brainstorm";
-
-          // Styling Prioritas
-          let prioClass = "prio-low";
-          if (task.priority === "High") prioClass = "prio-high";
-          if (task.priority === "Medium") prioClass = "prio-medium";
+          let prioClass = task.priority === "High" ? "prio-high" : task.priority === "Medium" ? "prio-medium" : "prio-low";
 
           const tr = document.createElement("tr");
           tr.innerHTML = `
                     <td>#${task.no}</td>
-                    <td style="font-weight:600; font-size:1rem;">${task.task}</td>
+                    <td style="font-weight:600;">${task.task}</td>
                     <td><span class="badge ${catClass}">${task.category}</span></td>
                     <td><span class="${prioClass}">${task.priority}</span></td>
-                    <td>${due.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}</td>
+                    <td>${due.toLocaleDateString("id-ID")}</td>
                     <td><span class="${daysClass}">${daysText}</span></td>
                     <td>
-                        <select onchange="updateData(${task.no}, 'status', this.value)" style="padding:6px; border-radius:4px;">
+                        <select onchange="updateData(${task.no}, 'status', this.value)">
                             <option value="Not Started" ${task.status === "Not Started" ? "selected" : ""}>Not Started</option>
-                            <option value="Research" ${task.status === "Research" ? "selected" : ""}>Research</option>
-                            <option value="Scripting" ${task.status === "Scripting" ? "selected" : ""}>Scripting</option>
-                            <option value="In Review" ${task.status === "In Review" ? "selected" : ""}>In Review</option>
-                            <option value="Scheduling" ${task.status === "Scheduling" ? "selected" : ""}>Scheduling</option>
                             <option value="Published" ${task.status === "Published" ? "selected" : ""}>Published</option>
-                        </select>
+                            </select>
                     </td>
-                    <td style="text-align:center">
-                        <input type="checkbox" ${isFinished ? "checked" : ""} onchange="updateData(${task.no}, 'done', this.checked)">
-                    </td>
+                    <td style="text-align:center"><input type="checkbox" ${isFinished ? "checked" : ""} onchange="updateData(${task.no}, 'done', this.checked)"></td>
                     <td style="text-align:center; white-space:nowrap;">
                         <button class="btn-action btn-edit" onclick="openModal(${task.no})">✏️</button>
                         <button class="btn-action btn-delete" onclick="deleteData(${task.no})">🗑️</button>
@@ -594,27 +593,39 @@
         });
       }
 
+      // --- ISI LIST KATEGORI DI MODAL EDIT ---
+      function updateCategoryList(tasks) {
+        // Ambil semua kategori unik yang pernah dipake user
+        const categories = [...new Set(tasks.map((t) => t.category))];
+        const datalist = document.getElementById("category-options");
+        // Tambah kategori default biar gak kosong
+        const defaults = ["YT Gadget", "YT Vlog", "Shorts", "Brainstorm"];
+        const allCats = [...new Set([...defaults, ...categories])];
+
+        datalist.innerHTML = allCats.map((c) => `<option value="${c}">`).join("");
+      }
+
       // --- UPDATE & DELETE ---
       async function updateData(id, type, val) {
         await fetch(`${API_URL}?action=update&no=${id}&username=${CURRENT_USER}&${type}=${val}`, { method: "POST" });
-        if (type === "status" && val === "Published") fetchData(); // Refresh visual biar checklist otomatis nyala
-        if (type === "done") fetchData(); // Refresh kalau checklist dicentang manual
+        if (type === "status" && val === "Published") fetchData();
+        if (type === "done") fetchData();
       }
 
       async function deleteData(id) {
-        if (confirm("Yakin mau hapus konten ini?")) {
+        if (confirm("Hapus?")) {
           await fetch(`${API_URL}?action=delete&no=${id}&username=${CURRENT_USER}`, { method: "POST" });
           fetchData();
         }
       }
 
-      // --- MODAL EDIT ---
+      // --- MODAL ---
       function openModal(id) {
         const task = globalTasks.find((t) => t.no == id);
         if (task) {
           document.getElementById("edit-id").value = task.no;
           document.getElementById("edit-task").value = task.task;
-          document.getElementById("edit-category").value = task.category;
+          document.getElementById("edit-category").value = task.category; // Input teks
           document.getElementById("edit-priority").value = task.priority;
           document.getElementById("edit-duedate").value = task.duedate ? new Date(task.duedate).toISOString().split("T")[0] : "";
           document.getElementById("editModal").style.display = "flex";
@@ -625,13 +636,13 @@
         e.preventDefault();
         const btn = document.getElementById("btnSaveEdit");
         btn.innerText = "Menyimpan...";
+
         const id = document.getElementById("edit-id").value;
         const task = encodeURIComponent(document.getElementById("edit-task").value);
         const cat = encodeURIComponent(document.getElementById("edit-category").value);
         const prio = encodeURIComponent(document.getElementById("edit-priority").value);
         const date = encodeURIComponent(document.getElementById("edit-duedate").value);
 
-        // Kirim username juga
         await fetch(`${API_URL}?action=update&no=${id}&username=${CURRENT_USER}&task=${task}&category=${cat}&priority=${prio}&duedate=${date}`, { method: "POST" });
 
         document.getElementById("editModal").style.display = "none";
