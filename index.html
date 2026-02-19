@@ -125,6 +125,23 @@
         font-size: 0.9rem;
         margin-left: 10px;
       }
+      /* --- TOMBOL DONASI --- */
+      .btn-donate {
+        background: #f59e0b; /* Warna orange a la Saweria */
+        color: white;
+        padding: 10px 15px;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+        border: 1px solid #d97706;
+      }
+      .btn-donate:hover {
+        background: #d97706;
+        transform: translateY(-2px); /* Efek melayang pas disentuh */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+      }
 
       .table-wrap {
         overflow-x: auto;
@@ -348,7 +365,9 @@
           <h1>🚀 Dashboard <span id="display-user" class="user-badge"></span></h1>
           <p id="progress-info">Memuat data...</p>
         </div>
-        <div style="display: flex; align-items: center">
+        <div style="display: flex; align-items: center; gap: 15px">
+          <a href="https://saweria.co/username_lo" target="_blank" class="btn-donate">☕ Traktir Kopi</a>
+
           <a href="add.html" class="btn-add">+ Tambah Konten</a>
           <button class="btn-logout" onclick="doLogout()">Keluar</button>
         </div>
