@@ -351,8 +351,12 @@
       <div class="login-card">
         <h2 id="login-title">🔐 Login Planner</h2>
         <p style="color: #666; font-size: 0.9rem; margin-bottom: 20px">Masukkan Nama & PIN Anda</p>
+
         <input type="text" id="login-user" placeholder="Username (misal: Andri)" required />
         <input type="password" id="login-pin" placeholder="PIN (misal: 1234)" required />
+
+        <input type="email" id="login-email" placeholder="Email (Wajib buat pengingat jadwal)" style="display: none; margin-bottom: 15px; width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box" />
+
         <button class="btn-login" id="btn-login-action" onclick="doLogin()">Masuk</button>
         <p id="login-msg" style="color: red; margin-top: 10px; font-size: 0.9rem"></p>
         <span class="toggle-link" id="toggle-text" onclick="switchMode()">Belum punya akun? Daftar</span>
@@ -450,6 +454,29 @@
       }
 
       function switchMode() {
+            isRegisterMode = !isRegisterMode;
+            const title = document.getElementById('login-title');
+            const btn = document.getElementById('btn-login-action');
+            const toggle = document.getElementById('toggle-text');
+            const msg = document.getElementById('login-msg');
+            const emailInput = document.getElementById('login-email'); // Ambil elemen email
+
+            msg.innerText = "";
+
+            if(isRegisterMode) {
+                title.innerText = "📝 Daftar Akun Baru";
+                btn.innerText = "Daftar Sekarang";
+                btn.onclick = doRegister;
+                toggle.innerText = "Sudah punya akun? Login";
+                emailInput.style.display = "block"; // Tampilkan kotak email
+            } else {
+                title.innerText = "🔐 Login Planner";
+                btn.innerText = "Masuk";
+                btn.onclick = doLogin;
+                toggle.innerText = "Belum punya akun? Daftar";
+                emailInput.style.display = "none"; // Sembunyikan kotak email
+            }
+        }
         isRegisterMode = !isRegisterMode;
         const title = document.getElementById("login-title");
         const btn = document.getElementById("btn-login-action");
@@ -504,8 +531,35 @@
           }
         }
       }
-
       async function doRegister() {
+            const user = document.getElementById('login-user').value;
+            const pin = document.getElementById('login-pin').value;
+            const email = document.getElementById('login-email').value; // Ambil nilai email
+            const btn = document.getElementById('btn-login-action');
+            const msg = document.getElementById('login-msg');
+
+            if(!user || !pin || !email) { msg.innerText = "Isi semua kolom, termasuk Email!"; return; }
+            if(!email.includes("@")) { msg.innerText = "Format email salah!"; return; }
+
+            btn.innerText = "Mendaftarkan..."; btn.disabled = true;
+
+            try {
+                // Jangan lupa ganti API_URL dengan URL terbaru lo ya!
+                const res = await fetch(`${API_URL}?action=register&username=${encodeURIComponent(user)}&pin=${encodeURIComponent(pin)}&email=${encodeURIComponent(email)}`);
+                const json = await res.json();
+
+                if (json.result === 'success') {
+                    alert("Pendaftaran Berhasil! Silakan Login.");
+                    switchMode(); // Balik ke mode login otomatis
+                } else {
+                    msg.innerText = "Gagal: " + json.message;
+                }
+            } catch (e) {
+                msg.innerText = "Error koneksi.";
+            } finally {
+                btn.innerText = "Daftar Sekarang"; btn.disabled = false;
+            }
+        }
         const user = document.getElementById("login-user").value;
         const pin = document.getElementById("login-pin").value;
         const btn = document.getElementById("btn-login-action");
