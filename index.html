@@ -14,7 +14,10 @@
         --success: #16a34a;
         --danger: #dc2626;
       }
+
+      /* Anti Dark-Mode Paksaan */
       body {
+        color-scheme: light;
         font-family: "Segoe UI", sans-serif;
         background: var(--bg);
         color: var(--text);
@@ -22,7 +25,7 @@
         padding: 20px;
       }
 
-      /* LOGIN & LAYOUT STYLE (SAMA) */
+      /* LOGIN & LAYOUT STYLE */
       #login-screen {
         position: fixed;
         top: 0;
@@ -77,6 +80,7 @@
         text-decoration: underline;
       }
 
+      /* DASHBOARD */
       #dashboard-screen {
         display: none;
       }
@@ -104,6 +108,23 @@
         font-weight: bold;
       }
 
+      /* TOMBOL DONASI DLL */
+      .btn-donate {
+        background: #f59e0b;
+        color: white;
+        padding: 10px 15px;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+        border: 1px solid #d97706;
+      }
+      .btn-donate:hover {
+        background: #d97706;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+      }
       .btn-add {
         background: white;
         color: var(--primary);
@@ -123,26 +144,9 @@
         border-radius: 8px;
         cursor: pointer;
         font-size: 0.9rem;
-        margin-left: 10px;
-      }
-      /* --- TOMBOL DONASI --- */
-      .btn-donate {
-        background: #f59e0b; /* Warna orange a la Saweria */
-        color: white;
-        padding: 10px 15px;
-        text-decoration: none;
-        border-radius: 8px;
-        font-weight: 700;
-        font-size: 0.9rem;
-        transition: all 0.2s ease;
-        border: 1px solid #d97706;
-      }
-      .btn-donate:hover {
-        background: #d97706;
-        transform: translateY(-2px); /* Efek melayang pas disentuh */
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
       }
 
+      /* TABEL */
       .table-wrap {
         overflow-x: auto;
         background: var(--card);
@@ -172,7 +176,7 @@
         background-color: #f8fafc;
       }
 
-      /* BADGE UMUM */
+      /* BADGE KATEGORI WARNA-WARNI */
       .badge {
         padding: 6px 12px;
         border-radius: 20px;
@@ -183,36 +187,34 @@
         white-space: nowrap;
         letter-spacing: 0.5px;
       }
-
-      /* PALET WARNA DINAMIS (Ini Rahasianya!) */
       .color-1 {
         background: #dbeafe;
         color: #1e40af;
-      } /* Biru */
+      }
       .color-2 {
         background: #fef9c3;
         color: #854d0e;
-      } /* Kuning */
+      }
       .color-3 {
         background: #fee2e2;
         color: #991b1b;
-      } /* Merah */
+      }
       .color-4 {
         background: #d1fae5;
         color: #065f46;
-      } /* Hijau */
+      }
       .color-5 {
         background: #f3e8ff;
         color: #6b21a8;
-      } /* Ungu */
+      }
       .color-6 {
         background: #ffedd5;
         color: #9a3412;
-      } /* Orange */
+      }
       .color-0 {
         background: #f3f4f6;
         color: #4b5563;
-      } /* Abu (Default) */
+      }
 
       .prio-high {
         color: var(--danger);
@@ -370,7 +372,7 @@
           <p id="progress-info">Memuat data...</p>
         </div>
         <div style="display: flex; align-items: center; gap: 15px">
-          <a href="http://lynk.id/nugrohoandri/W2Qn3D0/checkout" target="_blank" class="btn-donate">☕ Traktir Kopi</a>
+          <a href="https://saweria.co/username_lo" target="_blank" class="btn-donate">☕ Traktir Kopi</a>
 
           <a href="add.html" class="btn-add">+ Tambah Konten</a>
           <button class="btn-logout" onclick="doLogout()">Keluar</button>
@@ -408,12 +410,12 @@
           <input type="hidden" id="edit-id" />
           <div class="form-group">
             <label>Judul Task</label>
-            <input type="text" id="edit-task" class="form-control" placeholder="Judul" required />
+            <input type="text" id="edit-task" class="form-control" required />
           </div>
           <div class="form-group">
-            <label>Kategori (Ketik baru / Pilih)</label>
-            <input type="text" id="edit-category" list="category-options" class="form-control" placeholder="Ketik kategori..." required />
-            <datalist id="category-options"> </datalist>
+            <label>Kategori</label>
+            <input type="text" id="edit-category" list="category-options" class="form-control" required />
+            <datalist id="category-options"></datalist>
           </div>
           <div class="form-group">
             <label>Prioritas</label>
@@ -434,13 +436,13 @@
     </div>
 
     <script>
+      // MASUKKAN URL DEPLOYMENT APPS SCRIPT YANG BARU DI SINI!!
       const API_URL = "https://script.google.com/macros/s/AKfycbzUuN3e88CYwvlRYNGLsYsDxFXxFHC0ZyWE4vPenzkn9927tetWD2K1c52XBp0X9FD3zg/exec";
 
       let CURRENT_USER = localStorage.getItem("planner_user") || null;
       let globalTasks = [];
       let isRegisterMode = false;
 
-      // --- LOGIN & REGISTER ---
       function checkSession() {
         if (CURRENT_USER) {
           document.getElementById("login-screen").style.display = "none";
@@ -454,34 +456,13 @@
       }
 
       function switchMode() {
-            isRegisterMode = !isRegisterMode;
-            const title = document.getElementById('login-title');
-            const btn = document.getElementById('btn-login-action');
-            const toggle = document.getElementById('toggle-text');
-            const msg = document.getElementById('login-msg');
-            const emailInput = document.getElementById('login-email'); // Ambil elemen email
-
-            msg.innerText = "";
-
-            if(isRegisterMode) {
-                title.innerText = "📝 Daftar Akun Baru";
-                btn.innerText = "Daftar Sekarang";
-                btn.onclick = doRegister;
-                toggle.innerText = "Sudah punya akun? Login";
-                emailInput.style.display = "block"; // Tampilkan kotak email
-            } else {
-                title.innerText = "🔐 Login Planner";
-                btn.innerText = "Masuk";
-                btn.onclick = doLogin;
-                toggle.innerText = "Belum punya akun? Daftar";
-                emailInput.style.display = "none"; // Sembunyikan kotak email
-            }
-        }
         isRegisterMode = !isRegisterMode;
         const title = document.getElementById("login-title");
         const btn = document.getElementById("btn-login-action");
         const toggle = document.getElementById("toggle-text");
         const msg = document.getElementById("login-msg");
+        const emailInput = document.getElementById("login-email");
+
         msg.innerText = "";
 
         if (isRegisterMode) {
@@ -489,11 +470,13 @@
           btn.innerText = "Daftar Sekarang";
           btn.onclick = doRegister;
           toggle.innerText = "Sudah punya akun? Login";
+          emailInput.style.display = "block"; // Munculin email
         } else {
           title.innerText = "🔐 Login Planner";
           btn.innerText = "Masuk";
           btn.onclick = doLogin;
           toggle.innerText = "Belum punya akun? Daftar";
+          emailInput.style.display = "none"; // Umpetin email
         }
       }
 
@@ -511,7 +494,7 @@
         btn.disabled = true;
 
         try {
-          const res = await fetch(`${API_URL}?action=login&username=${user}&pin=${pin}`);
+          const res = await fetch(`${API_URL}?action=login&username=${encodeURIComponent(user)}&pin=${encodeURIComponent(pin)}`);
           const json = await res.json();
           if (json.result === "success") {
             localStorage.setItem("planner_user", json.username);
@@ -522,73 +505,52 @@
             msg.innerText = "Gagal: " + json.message;
           }
         } catch (e) {
-          msg.innerText = "Error koneksi.";
+          msg.innerText = "Error koneksi. Cek URL Deployment lo!";
         } finally {
-          // Cuma reset tombol kalau gagal login
           if (!CURRENT_USER) {
             btn.innerText = "Masuk";
             btn.disabled = false;
           }
         }
       }
+
       async function doRegister() {
-            const user = document.getElementById('login-user').value;
-            const pin = document.getElementById('login-pin').value;
-            const email = document.getElementById('login-email').value; // Ambil nilai email
-            const btn = document.getElementById('btn-login-action');
-            const msg = document.getElementById('login-msg');
-
-            if(!user || !pin || !email) { msg.innerText = "Isi semua kolom, termasuk Email!"; return; }
-            if(!email.includes("@")) { msg.innerText = "Format email salah!"; return; }
-
-            btn.innerText = "Mendaftarkan..."; btn.disabled = true;
-
-            try {
-                // Jangan lupa ganti API_URL dengan URL terbaru lo ya!
-                const res = await fetch(`${API_URL}?action=register&username=${encodeURIComponent(user)}&pin=${encodeURIComponent(pin)}&email=${encodeURIComponent(email)}`);
-                const json = await res.json();
-
-                if (json.result === 'success') {
-                    alert("Pendaftaran Berhasil! Silakan Login.");
-                    switchMode(); // Balik ke mode login otomatis
-                } else {
-                    msg.innerText = "Gagal: " + json.message;
-                }
-            } catch (e) {
-                msg.innerText = "Error koneksi.";
-            } finally {
-                btn.innerText = "Daftar Sekarang"; btn.disabled = false;
-            }
-        }
         const user = document.getElementById("login-user").value;
         const pin = document.getElementById("login-pin").value;
+        const email = document.getElementById("login-email").value;
         const btn = document.getElementById("btn-login-action");
         const msg = document.getElementById("login-msg");
 
-        if (!user || !pin) {
-          msg.innerText = "Isi semua kolom!";
+        if (!user || !pin || !email) {
+          msg.innerText = "Isi semua kolom, termasuk Email!";
           return;
         }
+        if (!email.includes("@")) {
+          msg.innerText = "Format email salah!";
+          return;
+        }
+
         btn.innerText = "Mendaftarkan...";
         btn.disabled = true;
 
         try {
-          const res = await fetch(`${API_URL}?action=register&username=${user}&pin=${pin}`);
+          const res = await fetch(`${API_URL}?action=register&username=${encodeURIComponent(user)}&pin=${encodeURIComponent(pin)}&email=${encodeURIComponent(email)}`);
           const json = await res.json();
+
           if (json.result === "success") {
             alert("Pendaftaran Berhasil! Silakan Login.");
-            switchMode(); // Otomatis balik ke form Login yang bener
+            switchMode();
           } else {
             msg.innerText = "Gagal: " + json.message;
-            btn.innerText = "Daftar Sekarang";
-            btn.disabled = false;
           }
         } catch (e) {
-          msg.innerText = "Error koneksi.";
+          msg.innerText = "Error koneksi. Cek URL Deployment lo!";
+        } finally {
           btn.innerText = "Daftar Sekarang";
           btn.disabled = false;
         }
       }
+
       function doLogout() {
         if (confirm("Yakin mau keluar?")) {
           localStorage.removeItem("planner_user");
@@ -596,14 +558,13 @@
         }
       }
 
-      // --- FETCH DATA & RENDER ---
       async function fetchData() {
         try {
           const res = await fetch(`${API_URL}?action=read&username=${CURRENT_USER}`);
           const json = await res.json();
           globalTasks = json.data || [];
           renderTable(globalTasks);
-          updateCategoryList(globalTasks); // Update opsi kategori
+          updateCategoryList(globalTasks);
         } catch (err) {
           console.error(err);
         }
@@ -633,13 +594,10 @@
           let daysText = isFinished ? "Selesai ✅" : diffDays < 0 ? `Telat ${Math.abs(diffDays)} hari` : diffDays === 0 ? "HARI INI!" : `${diffDays} hari lagi`;
           let daysClass = isFinished ? "days-done" : diffDays < 0 ? "days-late" : diffDays === 0 ? "days-today" : "days-ok";
 
-          // --- LOGIKA WARNA KATEGORI OTOMATIS ---
-          // Kita generate angka dari huruf pertama kategori biar warnanya konsisten
-          // Misal: "Masak" selalu warna 1, "Vlog" selalu warna 2
           let catClass = "color-0";
           if (task.category) {
             const firstChar = task.category.charCodeAt(0);
-            const colorIndex = (firstChar % 6) + 1; // Pilih warna 1-6
+            const colorIndex = (firstChar % 6) + 1;
             catClass = `color-${colorIndex}`;
           }
 
@@ -656,8 +614,12 @@
                     <td>
                         <select onchange="updateData(${task.no}, 'status', this.value)">
                             <option value="Not Started" ${task.status === "Not Started" ? "selected" : ""}>Not Started</option>
+                            <option value="Research" ${task.status === "Research" ? "selected" : ""}>Research</option>
+                            <option value="Scripting" ${task.status === "Scripting" ? "selected" : ""}>Scripting</option>
+                            <option value="In Review" ${task.status === "In Review" ? "selected" : ""}>In Review</option>
+                            <option value="Scheduling" ${task.status === "Scheduling" ? "selected" : ""}>Scheduling</option>
                             <option value="Published" ${task.status === "Published" ? "selected" : ""}>Published</option>
-                            </select>
+                        </select>
                     </td>
                     <td style="text-align:center"><input type="checkbox" ${isFinished ? "checked" : ""} onchange="updateData(${task.no}, 'done', this.checked)"></td>
                     <td style="text-align:center; white-space:nowrap;">
@@ -669,19 +631,14 @@
         });
       }
 
-      // --- ISI LIST KATEGORI DI MODAL EDIT ---
       function updateCategoryList(tasks) {
-        // Ambil semua kategori unik yang pernah dipake user
         const categories = [...new Set(tasks.map((t) => t.category))];
         const datalist = document.getElementById("category-options");
-        // Tambah kategori default biar gak kosong
         const defaults = ["YT Gadget", "YT Vlog", "Shorts", "Brainstorm"];
         const allCats = [...new Set([...defaults, ...categories])];
-
         datalist.innerHTML = allCats.map((c) => `<option value="${c}">`).join("");
       }
 
-      // --- UPDATE & DELETE ---
       async function updateData(id, type, val) {
         await fetch(`${API_URL}?action=update&no=${id}&username=${CURRENT_USER}&${type}=${val}`, { method: "POST" });
         if (type === "status" && val === "Published") fetchData();
@@ -695,13 +652,12 @@
         }
       }
 
-      // --- MODAL ---
       function openModal(id) {
         const task = globalTasks.find((t) => t.no == id);
         if (task) {
           document.getElementById("edit-id").value = task.no;
           document.getElementById("edit-task").value = task.task;
-          document.getElementById("edit-category").value = task.category; // Input teks
+          document.getElementById("edit-category").value = task.category;
           document.getElementById("edit-priority").value = task.priority;
           document.getElementById("edit-duedate").value = task.duedate ? new Date(task.duedate).toISOString().split("T")[0] : "";
           document.getElementById("editModal").style.display = "flex";
