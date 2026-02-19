@@ -346,6 +346,32 @@
         color: #6b7280;
         font-style: italic;
       }
+      /* --- PROGRESS BAR STYLE --- */
+      .progress-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 8px;
+      }
+      .progress-bg {
+        flex-grow: 1;
+        background-color: #e5e7eb;
+        border-radius: 99px;
+        height: 8px;
+        overflow: hidden;
+      }
+      .progress-fill {
+        height: 100%;
+        border-radius: 99px;
+        transition: all 0.4s ease;
+      }
+      .progress-text {
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #6b7280;
+        width: 35px;
+        text-align: right;
+      }
     </style>
   </head>
   <body>
@@ -603,6 +629,38 @@
 
           let prioClass = task.priority === "High" ? "prio-high" : task.priority === "Medium" ? "prio-medium" : "prio-low";
 
+          // --- LOGIKA PROGRESS BAR ---
+          let progress = 0;
+          let progColor = "#9ca3af"; // Default abu-abu
+          switch (task.status) {
+            case "Research":
+              progress = 20;
+              progColor = "#ef4444";
+              break; // Merah
+            case "Scripting":
+              progress = 40;
+              progColor = "#f59e0b";
+              break; // Orange
+            case "In Review":
+              progress = 60;
+              progColor = "#eab308";
+              break; // Kuning
+            case "Scheduling":
+              progress = 80;
+              progColor = "#3b82f6";
+              break; // Biru
+            case "Published":
+              progress = 100;
+              progColor = "#10b981";
+              break; // Hijau
+          }
+
+          // Kalau kotak 'Done' dicentang, paksa jadi 100% hijau
+          if (isFinished) {
+            progress = 100;
+            progColor = "#10b981";
+          }
+
           const tr = document.createElement("tr");
           tr.innerHTML = `
                     <td>#${task.no}</td>
@@ -611,8 +669,9 @@
                     <td><span class="${prioClass}">${task.priority}</span></td>
                     <td>${due.toLocaleDateString("id-ID")}</td>
                     <td><span class="${daysClass}">${daysText}</span></td>
-                    <td>
-                        <select onchange="updateData(${task.no}, 'status', this.value)">
+                    
+                    <td style="min-width: 140px;">
+                        <select onchange="updateData(${task.no}, 'status', this.value)" style="width:100%; border-color:${progColor};">
                             <option value="Not Started" ${task.status === "Not Started" ? "selected" : ""}>Not Started</option>
                             <option value="Research" ${task.status === "Research" ? "selected" : ""}>Research</option>
                             <option value="Scripting" ${task.status === "Scripting" ? "selected" : ""}>Scripting</option>
@@ -620,7 +679,14 @@
                             <option value="Scheduling" ${task.status === "Scheduling" ? "selected" : ""}>Scheduling</option>
                             <option value="Published" ${task.status === "Published" ? "selected" : ""}>Published</option>
                         </select>
+                        <div class="progress-wrapper">
+                            <div class="progress-bg">
+                                <div class="progress-fill" style="width: ${progress}%; background-color: ${progColor};"></div>
+                            </div>
+                            <span class="progress-text">${progress}%</span>
+                        </div>
                     </td>
+
                     <td style="text-align:center"><input type="checkbox" ${isFinished ? "checked" : ""} onchange="updateData(${task.no}, 'done', this.checked)"></td>
                     <td style="text-align:center; white-space:nowrap;">
                         <button class="btn-action btn-edit" onclick="openModal(${task.no})">✏️</button>
@@ -630,7 +696,6 @@
           tbody.appendChild(tr);
         });
       }
-
       function updateCategoryList(tasks) {
         const categories = [...new Set(tasks.map((t) => t.category))];
         const datalist = document.getElementById("category-options");
