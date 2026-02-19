@@ -478,8 +478,11 @@
         } catch (e) {
           msg.innerText = "Error koneksi.";
         } finally {
-          btn.innerText = "Masuk";
-          btn.disabled = false;
+          // Cuma reset tombol kalau gagal login
+          if (!CURRENT_USER) {
+            btn.innerText = "Masuk";
+            btn.disabled = false;
+          }
         }
       }
 
@@ -501,18 +504,18 @@
           const json = await res.json();
           if (json.result === "success") {
             alert("Pendaftaran Berhasil! Silakan Login.");
-            switchMode();
+            switchMode(); // Otomatis balik ke form Login yang bener
           } else {
             msg.innerText = "Gagal: " + json.message;
+            btn.innerText = "Daftar Sekarang";
+            btn.disabled = false;
           }
         } catch (e) {
           msg.innerText = "Error koneksi.";
-        } finally {
           btn.innerText = "Daftar Sekarang";
           btn.disabled = false;
         }
       }
-
       function doLogout() {
         if (confirm("Yakin mau keluar?")) {
           localStorage.removeItem("planner_user");
